@@ -66,8 +66,8 @@ body { background: radial-gradient(1200px 600px at 10% 10%, rgba(11,74,111,0.06)
 .landing-page .container { background:transparent }
 
 .landing-page.is-mobile .landing-hero-card { max-width:100% }
-.landing-page.is-mobile .landing-actions { width:100%; gap:10px; flex-direction:column; align-items:center }
-.landing-page.is-mobile .landing-btn { width:min(100%,340px); padding:10px 14px; font-size:14px; align-self:center }
+.landing-page.is-mobile .landing-actions { width:100%; gap:10px; flex-direction:column; align-items:center; padding:0 5% }
+.landing-page.is-mobile .landing-btn { width:90%; max-width:90%; padding:10px 14px; font-size:14px; align-self:center }
 .landing-page.is-mobile .landing-nav-grid { grid-template-columns:1fr }
 .landing-page.is-mobile .landing-nav-card { padding:16px }
 .landing-page.is-mobile .landing-stats { flex-direction:column; gap:18px }
@@ -99,11 +99,9 @@ body { background: radial-gradient(1200px 600px at 10% 10%, rgba(11,74,111,0.06)
 .main-page .inline-answer { display:inline-flex; align-items:center; padding:2px 10px; border-radius:10px; background:rgba(255,255,255,0.15); color:#ffe3a3; font-weight:600; margin:0 4px }
 .main-page .empty { color:rgba(236,242,255,0.7); text-align:center }
 
-.main-page.is-mobile .main-controls { flex-direction:column; align-items:center; width:100%; max-width:none; gap:12px }
-.main-page.is-mobile .main-search,
-.main-page.is-mobile .main-support-btn { width:min(100%,340px); max-width:340px }
-.main-page.is-mobile .main-search { padding:10px 14px; font-size:14px; border-radius:14px }
-.main-page.is-mobile .main-support-btn { justify-content:center; padding:10px 14px }
+.main-page.is-mobile .main-controls { flex-direction:column; align-items:center; width:100%; max-width:none; gap:12px; padding:0 5% }
+.main-page.is-mobile .main-search { width:90%; max-width:90%; padding:10px 14px; font-size:14px; border-radius:14px; box-sizing:border-box }
+.main-page.is-mobile .main-support-btn { width:90%; max-width:90%; justify-content:center; padding:10px 14px; box-sizing:border-box }
 
 .download-app-page { min-height:100vh; padding:clamp(32px,7vw,96px) 24px; display:flex; align-items:center; justify-content:center; background: radial-gradient(140% 160% at -10% -20%,#1d3ce2 0%,rgba(5,11,24,0.95) 55%), linear-gradient(120deg,#030712,#0e1c3f); color:#f7fbff; position:relative; overflow:hidden; font-family:'Space Grotesk','Segoe UI','Helvetica Neue',sans-serif }
 .download-aurora { position:absolute; width:420px; height:420px; border-radius:50%; filter: blur(140px); opacity:0.7; animation: auroraPulse 16s ease-in-out infinite }
