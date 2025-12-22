@@ -14,7 +14,7 @@ const navCards = [
 ]
 
 const stats = [
-  { value: '1200+', label: '题目覆盖' },
+  { value: '38', label: '题目覆盖' },
   { value: '60s', label: '部署上手' },
   { value: '0¥', label: '完全免费' }
 ]
