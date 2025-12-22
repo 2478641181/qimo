@@ -73,7 +73,7 @@ function SupportModal({ onClose }){
       <div className="support-content">
         <button className="support-close" onClick={onClose}>×</button>
         <h3>感谢你的支持 ❤️</h3>
-        <p>请点击图片在新窗口中查看或保存（图片由后端提供）。</p>
+        <p>请点击图片在新窗口中查看或保存。</p>
         <div className="support-image-wrap">
           <img src="/api/support-image" alt="支持我们图片" onClick={() => window.open('/api/support-image', '_blank')} style={{cursor:'pointer'}} />
         </div>
