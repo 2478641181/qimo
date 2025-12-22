@@ -51,11 +51,13 @@ export default function MainPage() {
         <div className="main-controls">
           <input
             className="main-search"
-            placeholder={'输入关键词，例如 "JS"'}
+            placeholder={isMobile ? '输入关键词搜索...' : '输入关键词，例如 "JS"'}
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
-          <button className="main-support-btn" onClick={() => setShowSupport(true)} aria-label="支持我们">支持我们</button>
+          <button className="main-support-btn" onClick={() => setShowSupport(true)} aria-label="支持我们">
+            {isMobile ? '支持' : '支持我们'}
+          </button>
         </div>
       </section>
 
