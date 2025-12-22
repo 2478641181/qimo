@@ -1,27 +1,75 @@
-# QA Viewer
+# 期末题库中心 (Exam Question Bank)
 
-这是一个最小的 Next.js 项目，用于展示 `data.json` 中的题目与答案，并提供搜索功能。
+这是一个基于 Next.js 构建的现代化题库检索系统，专为期末复习打造。支持关键词秒搜、填空题自动填充答案，并完美适配移动端设备。
 
-快速使用：
+## ✨ 功能特性
 
-- 本地运行:
+- **⚡ 即时检索**：输入关键词即可实时筛选题目，毫秒级响应。
+- **📱 全端适配**：精心设计的响应式布局，在手机、平板和桌面端都有极佳体验。
+- **🧩 智能填空**：自动识别填空题占位符，并将答案嵌入题目中显示，便于记忆。
+- **🎨 沉浸体验**：现代化的 UI 设计，包含动态背景流光和磨砂玻璃效果。
+- **❤️ 支持互动**：内置支持弹窗与悬浮按钮，方便用户进行互动或捐赠。
+
+## 🚀 快速开始
+
+### 1. 安装依赖
 
 ```bash
 npm install
-npm run dev
+# 或者
+yarn install
 ```
 
-- 构建并本地预览：
+### 2. 准备数据
+
+确保项目根目录下存在 `data.json` 文件，格式如下：
+
+```json
+{
+  "items": [
+    {
+      "question": "题目内容...",
+      "answer": "答案内容...",
+      "analysis": "解析..."
+    }
+  ]
+}
+```
+
+### 3. 启动开发服务器
+
+```bash
+npm run dev
+# 或者
+yarn dev
+```
+
+访问 [http://localhost:3000](http://localhost:3000) 查看效果。
+
+## 🛠️ 构建与部署
+
+### 构建生产版本
 
 ```bash
 npm run build
 npm start
 ```
 
-部署到 Vercel：
+### 部署到 Vercel
 
-1. 将代码推送到 GitHub（或其他 git 仓库）。
-2. 在 https://vercel.com/ 中选择 "Import Project"，连接仓库并导入。
-3. Vercel 会自动运行 `npm run build` 并部署。
+本项目针对 Vercel 进行了优化，推荐使用 Vercel 进行部署：
 
-注意：项目会在构建时读取仓库根目录下的 `data.json`。请确保仓库中存在 `data.json`（示例文件已包含在工作区）。
+1. 将代码推送到 GitHub。
+2. 在 [Vercel](https://vercel.com) 导入项目。
+3. 点击部署即可，Vercel 会自动处理构建过程。
+
+## 📂 项目结构
+
+- `pages/` - 页面路由与 API 接口
+- `styles/` - 全局样式与 CSS 变量
+- `public/` - 静态资源
+- `data.json` - 题库数据源
+
+## 📝 许可证
+
+MIT License
