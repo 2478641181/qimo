@@ -142,13 +142,16 @@ body { background: radial-gradient(1200px 600px at 10% 10%, rgba(11,74,111,0.06)
 	.landing-hero-card { max-width:100% }
 	.landing-hero { padding:20px 14px; border-radius:18px; box-shadow:0 12px 32px rgba(3,8,24,0.4); background:linear-gradient(160deg,#0c1226,#1b233f) }
 	.landing-lede { font-size:14px }
-	.landing-actions { width:100%; gap:10px }
-	.landing-btn { width:100%; padding:10px 14px; font-size:14px }
+	.landing-actions { width:100%; gap:10px; align-items:center }
+	.landing-btn { width:min(100%,320px); padding:10px 14px; font-size:14px; align-self:center }
 	.landing-nav-grid { grid-template-columns:1fr }
 	.landing-nav-card { padding:16px }
 	.landing-stats { flex-direction:column; gap:18px; width:100% }
 	.landing-stat { flex-direction:row; justify-content:space-between; align-items:center }
 	.landing-aurora { display:none }
+	.main-controls { width:min(100%,340px); margin:0 auto; align-items:center }
+	.main-search { width:100%; max-width:340px; padding:10px 14px; border-radius:14px; font-size:14px }
+	.main-support-btn { width:100%; max-width:340px; justify-content:center }
 }
 
 @media (max-width:440px){
