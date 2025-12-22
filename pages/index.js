@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 const navCards = [
   {
     title: '题库模式',
@@ -20,8 +22,9 @@ const stats = [
 ]
 
 export default function LandingPage() {
+  const isMobile = useMobileUA()
   return (
-    <div className="landing-page">
+    <div className={`landing-page ${isMobile ? 'is-mobile' : 'is-desktop'}`}>
       <section className="landing-hero" aria-labelledby="landing-hero-title">
         <div className="landing-aurora landing-aurora-one" aria-hidden="true" />
         <div className="landing-aurora landing-aurora-two" aria-hidden="true" />
@@ -56,6 +59,18 @@ export default function LandingPage() {
       </section>
     </div>
   )
+}
+
+function useMobileUA() {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    if (typeof navigator === 'undefined') return
+    const ua = navigator.userAgent || ''
+    setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua))
+  }, [])
+
+  return isMobile
 }
 
 

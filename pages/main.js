@@ -4,6 +4,7 @@ export default function MainPage() {
   const [items, setItems] = useState([])
   const [q, setQ] = useState('')
   const [showSupport, setShowSupport] = useState(false)
+  const isMobile = useMobileUA()
 
   useEffect(() => {
     let mounted = true
@@ -39,7 +40,7 @@ export default function MainPage() {
   }
 
   return (
-    <div className="main-page">
+    <div className={`main-page ${isMobile ? 'is-mobile' : 'is-desktop'}`}>
       <div className="main-glow main-glow-one" aria-hidden="true" />
       <div className="main-glow main-glow-two" aria-hidden="true" />
 
@@ -81,6 +82,18 @@ export default function MainPage() {
       {showSupport && <SupportModal onClose={() => setShowSupport(false)} />}
     </div>
   )
+}
+
+function useMobileUA() {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    if (typeof navigator === 'undefined') return
+    const ua = navigator.userAgent || ''
+    setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua))
+  }, [])
+
+  return isMobile
 }
 
 function SupportModal({ onClose }) {
