@@ -50,7 +50,7 @@ export default function MainPage() {
         <div className="main-controls">
           <input
             className="main-search"
-            placeholder={'输入关键词，例如 "电阻"'}
+            placeholder={'输入关键词，例如 "JS"'}
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
@@ -62,6 +62,11 @@ export default function MainPage() {
         {results.map((it, idx) => (
           <article key={it.id || idx} className="main-card">
             <div className="q">
+              <div className="question-meta">
+                <span className="question-bank-badge" aria-label="题库来源">
+                  {it.bank || '默认题库'}
+                </span>
+              </div>
               {it.titleText || it.title || it.question ? (
                 <div className="question-text">{renderWithAnswers(it.titleText || it.title || it.question, it.analysis)}</div>
               ) : (
