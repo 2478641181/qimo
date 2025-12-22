@@ -41,10 +41,7 @@ export default function Home() {
       <header className="header">
         <h1>题库展示</h1>
         <input className="search" placeholder="搜索题目或答案" value={q} onChange={(e) => setQ(e.target.value)} />
-        <button className="support-btn" onClick={() => setShowSupport(true)} aria-label="支持我们">
-          <img src="/img.jpg" alt="支持我们" className="support-thumb" />
-          <span>支持我们</span>
-        </button>
+        <button className="support-btn" onClick={() => setShowSupport(true)} aria-label="支持我们">支持我们</button>
       </header>
 
       <main className="list">
@@ -63,6 +60,7 @@ export default function Home() {
         ))}
         {results.length === 0 && <p className="empty">未找到匹配项</p>}
       </main>
+      {showSupport && <SupportModal onClose={() => setShowSupport(false)} />}
     </div>
   )
 }
@@ -75,9 +73,9 @@ function SupportModal({ onClose }){
       <div className="support-content">
         <button className="support-close" onClick={onClose}>×</button>
         <h3>感谢你的支持 ❤️</h3>
-        <p>请使用下面的图片或扫码向我们支持（图片文件：img.jpg）。</p>
+        <p>请点击图片在新窗口中查看或保存（图片由后端提供）。</p>
         <div className="support-image-wrap">
-          <img src="/img.jpg" alt="支持我们图片" />
+          <img src="/api/support-image" alt="支持我们图片" onClick={() => window.open('/api/support-image', '_blank')} style={{cursor:'pointer'}} />
         </div>
         <p className="muted">你也可以把这个仓库 Star 或部署到 Vercel 支持我们。</p>
       </div>
