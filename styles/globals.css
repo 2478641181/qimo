@@ -1,9 +1,35 @@
+.container { max-width: 1000px; margin: 24px auto; padding: 0 16px }
 html,body,#__next { height: 100%; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin: 0; padding: 20px; background:#f7f7f8 }
-.container { max-width: 900px; margin: 0 auto; }
-h1 { margin: 0 0 16px 0 }
-.search { width: 100%; padding: 10px 12px; font-size: 16px; margin-bottom: 16px; box-sizing: border-box }
-.list { display: grid; grid-template-columns: 1fr; gap: 12px }
-.card { background: #fff; padding: 14px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.06) }
-.card h2 { margin: 0 0 8px 0; font-size: 18px }
-.answer { margin:0; white-space: pre-wrap; color: #111 }
+body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin: 0; background: #f3f6f9; color: #0f1724 }
+.header { display:flex; gap:16px; align-items:center; margin-bottom:18px }
+.header h1 { margin:0; font-size:22px; color:#0b4a6f }
+.search { flex:1; max-width:480px; padding:10px 14px; border-radius:10px; border:1px solid #dfe7ef; box-shadow:0 2px 6px rgba(12,36,60,0.03); font-size:15px }
+.list { display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:16px }
+.card { background: linear-gradient(180deg,#ffffff,#fbfdff); padding:18px; border-radius:12px; box-shadow: 0 6px 18px rgba(12,36,60,0.06); border:1px solid rgba(11,74,111,0.04) }
+.question-text { font-size:15px; line-height:1.6; color:#06202b }
+.inline-answer { display:inline-block; background:#fff7d9; color:#8a5b00; padding:2px 8px; border-radius:6px; margin:0 4px; font-weight:600 }
+.answer-box { margin-top:12px; display:flex; gap:12px; align-items:flex-start }
+.answer-label { background:#0b4a6f; color:#fff; padding:6px 10px; border-radius:8px; font-weight:700; font-size:13px }
+.answer-body { background: #f8fbff; padding:10px 12px; border-radius:8px; color:#06324a; flex:1; white-space:pre-wrap }
+.empty { color:#6b7280 }
+
+/* 艺术化风格和支持按钮 */
+body { background: radial-gradient(1200px 600px at 10% 10%, rgba(11,74,111,0.06), transparent), linear-gradient(180deg,#fbfbff,#f3f6f9); }
+.card { backdrop-filter: blur(6px); border-left: 4px solid rgba(11,74,111,0.08); transform-origin: center; transition: transform .22s ease, box-shadow .22s ease }
+.card:hover { transform: translateY(-6px) rotate(-0.2deg); box-shadow: 0 18px 40px rgba(11,74,111,0.12) }
+.support-btn { display:inline-flex; gap:8px; align-items:center; background: linear-gradient(90deg,#ff8a65,#ffb86b); color:#fff; border:none; padding:8px 12px; border-radius:999px; cursor:pointer; box-shadow: 0 8px 20px rgba(255,138,101,0.18); font-weight:700 }
+.support-thumb { width:28px; height:28px; object-fit:cover; border-radius:6px; box-shadow: 0 2px 6px rgba(0,0,0,0.12) }
+.support-btn span{ font-size:13px }
+
+/* 模态 */
+.support-modal { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:1200 }
+.support-overlay { position:absolute; inset:0; background:rgba(2,6,23,0.6); backdrop-filter: blur(2px) }
+.support-content { position:relative; background: linear-gradient(180deg,#ffffff,#fffaf6); padding:20px; width: min(640px,90%); border-radius:14px; box-shadow: 0 20px 60px rgba(2,6,23,0.5); z-index:1210; text-align:center }
+.support-content h3{ margin:0 0 6px 0; color:#2b3b4a }
+.support-content p{ margin:6px 0 12px 0; color:#556b78 }
+.support-image-wrap{ display:flex; align-items:center; justify-content:center; padding:8px; background: linear-gradient(180deg,#fff,#fff7f1); border-radius:10px }
+.support-image-wrap img{ max-width:320px; width:80%; height:auto; border-radius:8px }
+.support-close{ position:absolute; right:10px; top:8px; border:none; background:transparent; font-size:20px; cursor:pointer; color:#718096 }
+.muted{ font-size:12px; color:#94a3b8 }
+
+
