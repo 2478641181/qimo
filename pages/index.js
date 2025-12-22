@@ -1,93 +1,59 @@
-import { useState, useMemo, useEffect } from 'react'
-
-export default function Home() {
-  const [items, setItems] = useState([])
-  const [q, setQ] = useState('')
-  const [showSupport, setShowSupport] = useState(false)
-
-  useEffect(() => {
-    let mounted = true
-    fetch('/api/questions')
-      .then(r => r.json())
-      .then(d => {
-        if (!mounted) return
-        if (d && d.items) setItems(d.items)
-      }).catch(() => {})
-    return () => { mounted = false }
-  }, [])
-
-  const lower = q.toLowerCase()
-  const results = useMemo(() => items.filter((it) => {
-    const title = (it.title || it.titleText || it.question || '').toString().toLowerCase()
-    const answer = (it.answer || it.answerText || it.analysis || '').toString().toLowerCase()
-    return title.includes(lower) || answer.includes(lower)
-  }), [items, lower])
-
-  function renderWithAnswers(titleText = '', analysis = '') {
-    const parts = titleText.split('<fillblank/>')
-    const answers = (analysis || '').split(',').map(s => s.trim())
-    return parts.map((p, i) => (
-      <span key={i}>
-        <span dangerouslySetInnerHTML={{ __html: p }} />
-        {i < parts.length - 1 && (
-          <span className="inline-answer">{answers[i] || '____'}</span>
-        )}
-      </span>
-    ))
+const navCards = [
+  {
+    title: '题库模式',
+    description: '即时检索题目、填空自动补齐、关键词高亮展示。',
+    href: '/main',
+    icon: '→'
+  },
+  {
+    title: '离线 App',
+    description: '下载 app.zip，离线场景也能完整访问题库。',
+    href: '/app',
+    icon: '⇩'
   }
+]
 
+const stats = [
+  { value: '1200+', label: '题目覆盖' },
+  { value: '60s', label: '部署上手' },
+  { value: '0¥', label: '完全免费' }
+]
+
+export default function LandingPage() {
   return (
-    <div className="container">
-      <header className="header">
-        <h1>题库展示</h1>
-        <input className="search" placeholder="搜索题目或答案" value={q} onChange={(e) => setQ(e.target.value)} />
-        <button className="support-btn" onClick={() => setShowSupport(true)} aria-label="支持我们">支持我们</button>
-      </header>
+    <div className="landing-page">
+      <section className="landing-hero" aria-labelledby="landing-hero-title">
+        <div className="landing-aurora landing-aurora-one" aria-hidden="true" />
+        <div className="landing-aurora landing-aurora-two" aria-hidden="true" />
+        <div className="landing-hero-card">
+          <p className="landing-eyebrow">导航</p>
+          <h1 id="landing-hero-title">刷题或下载，一键抵达。</h1>
+          <p className="landing-lede">线上实时检索、离线极速访问——将题库掌控在手，随时进入最合适的学习模式。</p>
+          <div className="landing-actions">
+            <a className="landing-btn primary" href="/main">进入题库</a>
+            <a className="landing-btn ghost" href="/app" rel="noopener noreferrer">下载 App</a>
+          </div>
 
-      <main className="list">
-        {results.map((it, idx) => (
-          <article key={it.id || idx} className="card">
-            <div className="q">
-              {it.titleText || it.title || it.question ? (
-                <div className="question-text">{renderWithAnswers(it.titleText || it.title || it.question, it.analysis)}</div>
-              ) : (
-                <h2>题目 {idx + 1}</h2>
-              )}
-            </div>
+          <div className="landing-nav-grid">
+            {navCards.map(card => (
+              <a key={card.title} className="landing-nav-card" href={card.href}>
+                <span className="landing-nav-label">{card.title}</span>
+                <p>{card.description}</p>
+                <span className="nav-arrow" aria-hidden="true">{card.icon}</span>
+              </a>
+            ))}
+          </div>
 
-            {/* 答案已内嵌到题目中（通过 <fillblank/> 占位替换），不再重复在下方显示 */}
-          </article>
-        ))}
-        {results.length === 0 && <p className="empty">未找到匹配项</p>}
-      </main>
-      {showSupport && <SupportModal onClose={() => setShowSupport(false)} />}
-    </div>
-  )
-}
-
-// 支持弹窗置于组件末尾
-function SupportModal({ onClose }){
-  return (
-    <div className="support-modal" role="dialog" aria-modal="true">
-      <div className="support-overlay" onClick={onClose} />
-      <div className="support-content">
-        <button className="support-close" onClick={onClose}>×</button>
-        <h3>感谢你的支持 ❤️</h3>
-        <p>请点击图片在新窗口中查看或保存。</p>
-        <div className="support-image-wrap">
-          <img src="/api/support-image" alt="支持我们图片" onClick={() => window.open('/api/support-image', '_blank')} style={{cursor:'pointer'}} />
+          <div className="landing-stats">
+            {stats.map(stat => (
+              <div key={stat.label} className="landing-stat">
+                <span className="landing-stat-value">{stat.value}</span>
+                <span className="landing-stat-label">{stat.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
-        <p className="muted">你也可以把这个仓库 Star 或部署到 Vercel 支持我们。</p>
-
-        <div className="support-actions">
-          <a className="github-link" href="https://github.com/2478641181/qimo" target="_blank" rel="noopener noreferrer">
-            <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path fillRule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.19 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-            </svg>
-            <span>查看仓库</span>
-          </a>
-        </div>
-      </div>
+      </section>
     </div>
   )
 }
