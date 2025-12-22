@@ -56,7 +56,7 @@ export default function MainPage() {
             onChange={(e) => setQ(e.target.value)}
           />
           <button className="main-support-btn" onClick={() => setShowSupport(true)} aria-label="支持我们">
-            {isMobile ? '支持' : '支持我们'}
+            {isMobile ? '支持一下' : '支持我们'}
           </button>
         </div>
       </section>
