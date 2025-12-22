@@ -130,6 +130,7 @@ body { background: radial-gradient(1200px 600px at 10% 10%, rgba(11,74,111,0.06)
   align-items: stretch;
   gap: 12px;
   max-width: 100%;
+  padding: 0 5%;
 }
 
 .main-page.is-mobile .main-search {
@@ -140,11 +141,8 @@ body { background: radial-gradient(1200px 600px at 10% 10%, rgba(11,74,111,0.06)
   font-size: 16px; /* 防止 iOS 缩放 */
   margin: 0;
   height: 48px; /* 统一高度 */
+  border-radius: 14px;
 }
-
-.main-page.is-mobile .main-controls { flex-direction:column; align-items:center; width:100%; max-width:none; gap:12px; padding:0 5% }
-.main-page.is-mobile .main-search { width:90%; max-width:90%; padding:10px 14px; font-size:14px; border-radius:14px; box-sizing:border-box }
-.main-page.is-mobile .main-support-btn { width:90%; max-width:90%; justify-content:center; padding:10px 14px; box-sizing:border-box }
 
 .download-app-page { min-height:100vh; padding:clamp(32px,7vw,96px) 24px; display:flex; align-items:center; justify-content:center; background: radial-gradient(140% 160% at -10% -20%,#1d3ce2 0%,rgba(5,11,24,0.95) 55%), linear-gradient(120deg,#030712,#0e1c3f); color:#f7fbff; position:relative; overflow:hidden; font-family:'Space Grotesk','Segoe UI','Helvetica Neue',sans-serif }
 .download-aurora { position:absolute; width:420px; height:420px; border-radius:50%; filter: blur(140px); opacity:0.7; animation: auroraPulse 16s ease-in-out infinite }
@@ -189,7 +187,6 @@ body { background: radial-gradient(1200px 600px at 10% 10%, rgba(11,74,111,0.06)
 	.landing-aurora { display:none }
 	.main-controls { flex-direction:column; align-items:flex-start; max-width:100%; gap:12px }
 	.main-search { width:100%; max-width:none }
-	.main-support-btn { align-self:flex-start }
 }
 
 @media (max-width:600px){
@@ -206,20 +203,36 @@ body { background: radial-gradient(1200px 600px at 10% 10%, rgba(11,74,111,0.06)
 	.landing-aurora { display:none }
 	.main-controls { width:min(100%,340px); margin:0 auto; align-items:center }
 	.main-search { width:100%; max-width:340px; padding:10px 14px; border-radius:14px; font-size:14px }
-	.main-support-btn { width:100%; max-width:340px; justify-content:center }
-}
-
-@media (max-width:440px){
-	.landing-hero { border-radius:16px; padding:24px 16px }
-	.landing-hero h1 { font-size:26px }
-	.landing-aurora { display:none }
-	.landing-nav-card p { font-size:13px }
-	.landing-stat-value { font-size:28px }
 }
 
 @keyframes auroraPulse { 0% { transform:translateY(0) scale(1); opacity:0.55 } 50% { transform:translateY(-40px) scale(1.1); opacity:0.85 } 100% { transform:translateY(0) scale(1); opacity:0.55 } }
 @keyframes orbit { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
 @keyframes pulse { 0% { opacity:0.4 } 50% { opacity:0.9 } 100% { opacity:0.4 } }
+
+/* 强制悬浮按钮样式 */
+.floating-support-btn {
+  position: fixed !important;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff8a65, #ffb86b);
+  color: white;
+  border: none;
+  box-shadow: 0 8px 24px rgba(255, 138, 101, 0.4);
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.floating-support-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 32px rgba(255, 138, 101, 0.5);
+}
 
 
 
