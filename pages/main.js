@@ -3,7 +3,7 @@ import { useState, useMemo, useEffect } from 'react'
 export default function MainPage() {
   const [items, setItems] = useState([])
   const [q, setQ] = useState('')
-  const [showSupport, setShowSupport] = useState(false)
+  const [showSupport, setShowSupport] = useState(true)
   const isMobile = useMobileUA()
 
   useEffect(() => {
@@ -55,9 +55,6 @@ export default function MainPage() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
-          <button className="main-support-btn" onClick={() => setShowSupport(true)} aria-label="支持我们">
-            {isMobile ? '支持一下' : '支持我们'}
-          </button>
         </div>
       </section>
 
@@ -80,6 +77,10 @@ export default function MainPage() {
         ))}
       </main>
       {results.length === 0 && <p className="empty">未找到匹配项</p>}
+
+      <button className="floating-support-btn" onClick={() => setShowSupport(true)} aria-label="支持我们">
+        ❤️
+      </button>
 
       {showSupport && <SupportModal onClose={() => setShowSupport(false)} />}
     </div>
