@@ -32,4 +32,11 @@ body { background: radial-gradient(1200px 600px at 10% 10%, rgba(11,74,111,0.06)
 .support-close{ position:absolute; right:10px; top:8px; border:none; background:transparent; font-size:20px; cursor:pointer; color:#718096 }
 .muted{ font-size:12px; color:#94a3b8 }
 
+/* GitHub 链接样式 */
+.support-actions { margin-top:12px; display:flex; justify-content:center }
+.github-link { display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:999px; background: linear-gradient(90deg,#24292e,#444b52); color:#fff; text-decoration:none; font-weight:600 }
+.github-link svg { fill: #fff; opacity:0.95 }
+.github-link:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(36,41,46,0.18) }
+
+
 
