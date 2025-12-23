@@ -57,9 +57,12 @@ body { background: radial-gradient(1200px 600px at 10% 10%, rgba(11,74,111,0.06)
 .support-btn span{ font-size:13px }
 
 /* 模态 */
-.support-modal { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:1200 }
-.support-overlay { position:absolute; inset:0; background:rgba(2,6,23,0.6); backdrop-filter: blur(2px) }
-.support-content { position:relative; background: linear-gradient(180deg,#ffffff,#fffaf6); padding:20px; width: min(640px,90%); border-radius:14px; box-shadow: 0 20px 60px rgba(2,6,23,0.5); z-index:1210; text-align:center }
+.support-modal { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:1200; animation: modalFadeIn 0.3s ease-out }
+.support-modal.closing { animation: modalFadeOut 0.3s ease-in forwards }
+.support-overlay { position:absolute; inset:0; background:rgba(2,6,23,0.6); backdrop-filter: blur(2px); transition: opacity 0.3s ease }
+.support-modal.closing .support-overlay { opacity: 0 }
+.support-content { position:relative; background: linear-gradient(180deg,#ffffff,#fffaf6); padding:20px; width: min(640px,90%); border-radius:14px; box-shadow: 0 20px 60px rgba(2,6,23,0.5); z-index:1210; text-align:center; animation: modalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) }
+.support-modal.closing .support-content { animation: modalSlideOut 0.3s ease-in forwards }
 .support-content h3{ margin:0 0 6px 0; color:#2b3b4a }
 .support-content p{ margin:6px 0 12px 0; color:#556b78 }
 .support-image-wrap{ display:flex; align-items:center; justify-content:center; padding:8px; background: linear-gradient(180deg,#fff,#fff7f1); border-radius:10px }
@@ -239,6 +242,47 @@ body { background: radial-gradient(1200px 600px at 10% 10%, rgba(11,74,111,0.06)
 @keyframes auroraPulse { 0% { transform:translateY(0) scale(1); opacity:0.55 } 50% { transform:translateY(-40px) scale(1.1); opacity:0.85 } 100% { transform:translateY(0) scale(1); opacity:0.55 } }
 @keyframes orbit { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
 @keyframes pulse { 0% { opacity:0.4 } 50% { opacity:0.9 } 100% { opacity:0.4 } }
+
+/* 模态框动画 */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modalSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.9);
+  }
+}
 
 /* 强制悬浮按钮样式 */
 .floating-support-btn {

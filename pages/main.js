@@ -100,11 +100,20 @@ function useMobileUA() {
 }
 
 function SupportModal({ onClose }) {
+  const [isClosing, setIsClosing] = useState(false)
+
+  const handleClose = () => {
+    setIsClosing(true)
+    setTimeout(() => {
+      onClose()
+    }, 300)
+  }
+
   return (
-    <div className="support-modal" role="dialog" aria-modal="true">
-      <div className="support-overlay" onClick={onClose} />
+    <div className={`support-modal ${isClosing ? 'closing' : ''}`} role="dialog" aria-modal="true">
+      <div className="support-overlay" onClick={handleClose} />
       <div className="support-content">
-        <button className="support-close" onClick={onClose}>×</button>
+        <button className="support-close" onClick={handleClose}>×</button>
         <h3>感谢你的支持 ❤️</h3>
         <p>请点击图片在新窗口中查看或保存。</p>
         <div className="support-image-wrap">
