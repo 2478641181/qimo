@@ -122,9 +122,10 @@ export default function handler(req, res) {
                   s = s.replace(/_{3,}/g, '<fillblank/>')
                   return s
                 }
-                const filled = buildFillText(baseQuestion)
+                const hasExistingBlank = typeof baseQuestion === 'string' && baseQuestion.includes('<fillblank/>')
+                const filled = hasExistingBlank ? baseQuestion : buildFillText(baseQuestion)
                 if (filled) {
-                  // overwrite to ensure blanks显示为 <fillblank/>
+                  // overwrite to ensure blanks显示为 <fillblank/>，但尊重已有填空
                   out.titleText = filled
                   out.title = filled
                   out.question = filled

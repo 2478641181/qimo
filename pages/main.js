@@ -34,24 +34,36 @@ const tokenize = (text = '') => text
   .filter((t) => t.length >= MIN_TOKEN_LENGTH)
 
 const scoreItemForQuery = (item, tokens = []) => {
-  if (!item || !tokens.length) return 0
+  if (!item || !tokens.length) return { score: 0, hits: 0 }
   const title = (item.titleText || item.title || item.question || '').toString().toLowerCase()
   const answer = (item.analysis || item.answer || '').toString().toLowerCase()
+
   return tokens.reduce((acc, t) => {
-    let score = acc
-    if (title.includes(t)) score += 2
-    if (answer.includes(t)) score += 1
-    return score
-  }, 0)
+    let score = acc.score
+    let hits = acc.hits
+    let matched = false
+    if (title.includes(t)) { score += 2; matched = true }
+    if (answer.includes(t)) { score += 1; matched = true }
+    if (matched) hits += 1
+    return { score, hits }
+  }, { score: 0, hits: 0 })
 }
 
 const pickTopMatches = (items = [], text = '', limit = 3) => {
   const tokens = tokenize(text).slice(0, 10)
   if (!tokens.length) return []
+  const minScore = 3 // 至少需要一个标题命中或多次答案命中
+
   return items
-    .map((it) => ({ item: it, score: scoreItemForQuery(it, tokens) }))
-    .filter((row) => row.score > 0)
-    .sort((a, b) => b.score - a.score)
+    .map((it) => {
+      const { score, hits } = scoreItemForQuery(it, tokens)
+      return { item: it, score, hits }
+    })
+    .filter((row) => row.score >= minScore && row.hits >= 1)
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score
+      return b.hits - a.hits
+    })
     .slice(0, limit)
     .map((row) => row.item)
 }
