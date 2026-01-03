@@ -6,10 +6,48 @@ export const config = {
   }
 }
 
-const buildImageDataUrl = (base64, mimeType = 'image/jpeg') => {
-  if (!base64) return null
-  if (base64.startsWith('data:')) return base64
-  return `data:${mimeType};base64,${base64}`
+let cachedToken = null
+let cachedExpire = 0
+
+const getAccessToken = async () => {
+  const now = Date.now()
+  if (cachedToken && cachedExpire > now + 60_000) return cachedToken
+
+  const ak = process.env.BAIDU_OCR_AK || process.env.OCR_API_KEY || 'QBaVv1JJVW9zs0LX6R8uujkl'
+  const sk = process.env.BAIDU_OCR_SK || process.env.OCR_API_SECRET || '9y82z2kZsbSUp2vmlCYfD7XC9XkOj3Zp'
+  if (!ak || !sk) throw new Error('缺少百度 OCR AK/SK 配置')
+
+  const params = new URLSearchParams({
+    grant_type: 'client_credentials',
+    client_id: ak,
+    client_secret: sk
+  })
+
+  const resp = await fetch('https://aip.baidubce.com/oauth/2.0/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params
+  })
+
+  const data = await resp.json()
+  if (!resp.ok || !data?.access_token) {
+    throw new Error(data?.error_description || '获取百度 OCR Token 失败')
+  }
+
+  cachedToken = data.access_token
+  const expiresIn = Number(data.expires_in || 0) * 1000
+  cachedExpire = now + Math.max(expiresIn, 0)
+  return cachedToken
+}
+
+const toBaiduPayload = (base64) => {
+  const params = new URLSearchParams()
+  params.append('image', base64)
+  params.append('language_type', 'CHN_ENG')
+  params.append('detect_direction', 'true')
+  params.append('paragraph', 'false')
+  params.append('probability', 'false')
+  return params
 }
 
 export default async function handler(req, res) {
@@ -18,44 +56,34 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, error: 'Method not allowed' })
   }
 
-  const { imageBase64, mimeType } = req.body || {}
+  const { imageBase64 } = req.body || {}
   if (!imageBase64) {
     return res.status(400).json({ success: false, error: '缺少待识别的图片数据' })
   }
 
-  const endpoint = process.env.OCR_API_URL || 'https://api.ocr.space/parse/image'
-  const apiKey = process.env.OCR_API_KEY || 'helloworld' // 免费测试 key，生产建议自行配置
-  const payload = new URLSearchParams()
-  const imgData = buildImageDataUrl(imageBase64, mimeType)
-
-  payload.append('apikey', apiKey)
-  payload.append('language', 'chs')
-  payload.append('isOverlayRequired', 'false')
-  payload.append('OCREngine', '2')
-  payload.append('base64Image', imgData)
-
   try {
-    const resp = await fetch(endpoint, {
+    const token = await getAccessToken()
+    const payload = toBaiduPayload(imageBase64)
+    const url = `https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=${token}`
+
+    const resp = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: payload
     })
 
     const data = await resp.json()
-    if (!resp.ok) {
-      const message = data?.ErrorMessage || 'OCR 服务调用失败'
-      throw new Error(Array.isArray(message) ? message.join('; ') : message)
+    if (!resp.ok || data?.error_code) {
+      throw new Error(data?.error_msg || '百度 OCR 调用失败')
     }
 
-    const parsed = (data?.ParsedResults || [])
-      .map((r) => r?.ParsedText || '')
+    const parsed = (data?.words_result || [])
+      .map((r) => r?.words || '')
       .filter(Boolean)
       .join('\n')
       .trim()
 
-    if (!parsed) {
-      throw new Error('OCR 未返回有效文本')
-    }
+    if (!parsed) throw new Error('OCR 未返回有效文本')
 
     res.status(200).json({ success: true, text: parsed })
   } catch (err) {
