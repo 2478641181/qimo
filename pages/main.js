@@ -1,10 +1,74 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+
+const MIN_TOKEN_LENGTH = 2
+
+const splitQuestionsFromText = (raw = '') => {
+  if (!raw) return []
+  const lines = raw.replace(/\r/g, '').split(/\n+/).map((l) => l.trim()).filter(Boolean)
+  const chunks = []
+  let buf = []
+
+  const flush = () => {
+    if (buf.length) {
+      const joined = buf.join(' ').trim()
+      if (joined.length > 4) chunks.push(joined)
+      buf = []
+    }
+  }
+
+  lines.forEach((line) => {
+    const cleaned = line.replace(/^\d{1,3}[\.．、]\s*/, '')
+    if (/^\d{1,3}[\.．、]/.test(line) && buf.length) {
+      flush()
+    }
+    buf.push(cleaned)
+  })
+  flush()
+  return chunks
+}
+
+const tokenize = (text = '') => text
+  .toLowerCase()
+  .split(/[^a-z0-9\u4e00-\u9fa5]+/i)
+  .map((t) => t.trim())
+  .filter((t) => t.length >= MIN_TOKEN_LENGTH)
+
+const scoreItemForQuery = (item, tokens = []) => {
+  if (!item || !tokens.length) return 0
+  const title = (item.titleText || item.title || item.question || '').toString().toLowerCase()
+  const answer = (item.analysis || item.answer || '').toString().toLowerCase()
+  return tokens.reduce((acc, t) => {
+    let score = acc
+    if (title.includes(t)) score += 2
+    if (answer.includes(t)) score += 1
+    return score
+  }, 0)
+}
+
+const pickTopMatches = (items = [], text = '', limit = 3) => {
+  const tokens = tokenize(text).slice(0, 10)
+  if (!tokens.length) return []
+  return items
+    .map((it) => ({ item: it, score: scoreItemForQuery(it, tokens) }))
+    .filter((row) => row.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((row) => row.item)
+}
 
 export default function MainPage() {
   const [items, setItems] = useState([])
   const [q, setQ] = useState('')
+  const [ocrText, setOcrText] = useState('')
+  const [ocrLoading, setOcrLoading] = useState(false)
+  const [ocrError, setOcrError] = useState('')
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [cameraOn, setCameraOn] = useState(false)
+  const [camError, setCamError] = useState('')
   const [showSupport, setShowSupport] = useState(true)
   const isMobile = useMobileUA()
+  const fileInputRef = useRef(null)
+  const videoRef = useRef(null)
 
   useEffect(() => {
     let mounted = true
@@ -18,12 +82,126 @@ export default function MainPage() {
     return () => { mounted = false }
   }, [])
 
+  useEffect(() => {
+    return () => {
+      stopCamera()
+    }
+  }, [])
+
   const lower = q.toLowerCase()
   const results = useMemo(() => items.filter((it) => {
     const title = (it.title || it.titleText || it.question || '').toString().toLowerCase()
     const answer = (it.answer || it.answerText || it.analysis || '').toString().toLowerCase()
     return title.includes(lower) || answer.includes(lower)
   }), [items, lower])
+
+  const parsedOcrQuestions = useMemo(() => splitQuestionsFromText(ocrText), [ocrText])
+
+  const ocrMatches = useMemo(() => parsedOcrQuestions.map((text) => ({
+    question: text,
+    matches: pickTopMatches(items, text, 3)
+  })), [items, parsedOcrQuestions])
+
+  const triggerFileSelect = () => {
+    if (fileInputRef.current) fileInputRef.current.click()
+  }
+
+  const handleFileChange = (e) => {
+    const file = e.target?.files?.[0]
+    if (!file) return
+    setSelectedFile(file)
+    runOcr(file, file.type)
+  }
+
+  const runOcr = (fileOrDataUrl, mimeOverride) => {
+    if (!fileOrDataUrl) {
+      setOcrError('请先选择图片或拍照')
+      return
+    }
+    setOcrError('')
+
+    const handleBase64 = async (dataUrl) => {
+      const base64 = (dataUrl || '').toString().replace(/^data:.*;base64,/, '')
+      if (!base64) {
+        setOcrError('读取图片失败，请重试')
+        return
+      }
+      setOcrLoading(true)
+      try {
+        const resp = await fetch('/api/ocr', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageBase64: base64, mimeType: mimeOverride || 'image/jpeg' })
+        })
+        const data = await resp.json()
+        if (!resp.ok || !data?.text) throw new Error(data?.error || 'OCR 识别失败')
+        setOcrText(data.text)
+      } catch (err) {
+        setOcrError(err?.message || 'OCR 识别失败，请稍后再试')
+      } finally {
+        setOcrLoading(false)
+      }
+    }
+
+    if (typeof fileOrDataUrl === 'string') {
+      handleBase64(fileOrDataUrl)
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = () => handleBase64(reader.result)
+    reader.readAsDataURL(fileOrDataUrl)
+  }
+
+  const stopCamera = () => {
+    const stream = videoRef.current?.srcObject
+    if (stream && typeof stream.getTracks === 'function') {
+      stream.getTracks().forEach((t) => t.stop())
+    }
+    if (videoRef.current) videoRef.current.srcObject = null
+    setCameraOn(false)
+  }
+
+  const startCamera = async () => {
+    try {
+      setCamError('')
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setCamError('当前浏览器不支持摄像头调用。')
+        return
+      }
+      stopCamera()
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+        setCameraOn(true)
+      }
+    } catch (err) {
+      setCamError('无法访问摄像头，请检查权限或设备。')
+      setCameraOn(false)
+    }
+  }
+
+  const captureAndOcr = () => {
+    if (!cameraOn || !videoRef.current) {
+      setCamError('请先打开摄像头')
+      return
+    }
+    setCamError('')
+    const video = videoRef.current
+    const canvas = document.createElement('canvas')
+    const w = video.videoWidth || 640
+    const h = video.videoHeight || 480
+    canvas.width = w
+    canvas.height = h
+    const ctx = canvas.getContext('2d')
+    if (!ctx) {
+      setCamError('无法读取摄像头画面')
+      return
+    }
+    ctx.drawImage(video, 0, 0, w, h)
+    const dataUrl = canvas.toDataURL('image/png')
+    runOcr(dataUrl, 'image/png')
+  }
 
   function renderWithAnswers(titleText = '', analysis = '') {
     const parts = titleText.split('<fillblank/>')
@@ -55,6 +233,71 @@ export default function MainPage() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
+        </div>
+      </section>
+
+      <section className="ocr-section" aria-label="OCR 搜题">
+        <div className="ocr-left">
+          <div className="ocr-actions">
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              onChange={handleFileChange}
+            />
+            <button className="ocr-btn" onClick={triggerFileSelect} aria-label="上传图片进行 OCR">
+              {selectedFile ? '更换图片' : '上传图片 OCR'}
+            </button>
+            <button className="ocr-btn ghost" onClick={startCamera} disabled={ocrLoading}>
+              打开摄像头
+            </button>
+            <button className="ocr-btn ghost" onClick={captureAndOcr} disabled={ocrLoading}>
+              拍照搜题
+            </button>
+            <button className="ocr-btn ghost" onClick={stopCamera} disabled={!cameraOn}>
+              关闭摄像头
+            </button>
+          </div>
+
+          <div className="ocr-camera">
+            <video ref={videoRef} className={`ocr-video ${cameraOn ? 'active' : ''}`} autoPlay playsInline muted />
+            {!cameraOn && <p className="ocr-hint">点击“打开摄像头”以实时取景，随后“拍照搜题”自动识别。</p>}
+          </div>
+
+          <textarea
+            className="ocr-textarea"
+            placeholder="粘贴 OCR 文本，或上传截图自动识别。支持自动分题并匹配题库。"
+            value={ocrText}
+            onChange={(e) => setOcrText(e.target.value)}
+            rows={isMobile ? 4 : 5}
+          />
+          {ocrError && <p className="ocr-error" role="alert">{ocrError}</p>}
+          {camError && <p className="ocr-error" role="alert">{camError}</p>}
+          <p className="ocr-hint">识别结果会自动拆分为题干，并为每题列出最匹配的题库项。点击题干可填入搜索框。</p>
+        </div>
+
+        <div className="ocr-right" aria-live="polite">
+          {ocrMatches.length === 0 && <p className="ocr-empty">暂无 OCR 结果，上传图片即可自动匹配题库。</p>}
+          {ocrMatches.map((row, idx) => (
+            <article key={`${row.question}-${idx}`} className="ocr-result-card">
+              <header className="ocr-result-header">
+                <span className="ocr-question-index">{idx + 1}</span>
+                <button className="ocr-question" onClick={() => setQ(row.question)}>
+                  {row.question}
+                </button>
+              </header>
+              <div className="ocr-match-list">
+                {row.matches.length === 0 && <p className="ocr-empty">题库中暂无明显匹配</p>}
+                {row.matches.map((m, mIdx) => (
+                  <div key={`${m.id || mIdx}-${idx}`} className="ocr-match">
+                    <div className="ocr-match-title">{renderWithAnswers(m.titleText || m.title || m.question, m.analysis)}</div>
+                    {m.bank && <span className="ocr-bank">{m.bank}</span>}
+                  </div>
+                ))}
+              </div>
+            </article>
+          ))}
         </div>
       </section>
 
