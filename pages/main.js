@@ -95,12 +95,7 @@ export default function MainPage() {
     return title.includes(lower) || answer.includes(lower)
   }), [items, lower])
 
-  const parsedOcrQuestions = useMemo(() => splitQuestionsFromText(ocrText), [ocrText])
-
-  const ocrMatches = useMemo(() => parsedOcrQuestions.map((text) => ({
-    question: text,
-    matches: pickTopMatches(items, text, 3)
-  })), [items, parsedOcrQuestions])
+  const ocrMatches = useMemo(() => pickTopMatches(items, ocrText, 5), [items, ocrText])
 
   const triggerFileSelect = () => {
     if (fileInputRef.current) fileInputRef.current.click()
@@ -264,40 +259,29 @@ export default function MainPage() {
             <video ref={videoRef} className={`ocr-video ${cameraOn ? 'active' : ''}`} autoPlay playsInline muted />
             {!cameraOn && <p className="ocr-hint">点击“打开摄像头”以实时取景，随后“拍照搜题”自动识别。</p>}
           </div>
-
-          <textarea
-            className="ocr-textarea"
-            placeholder="粘贴 OCR 文本，或上传截图自动识别。支持自动分题并匹配题库。"
-            value={ocrText}
-            onChange={(e) => setOcrText(e.target.value)}
-            rows={isMobile ? 4 : 5}
-          />
           {ocrError && <p className="ocr-error" role="alert">{ocrError}</p>}
           {camError && <p className="ocr-error" role="alert">{camError}</p>}
-          <p className="ocr-hint">识别结果会自动拆分为题干，并为每题列出最匹配的题库项。点击题干可填入搜索框。</p>
+          <p className="ocr-hint">拍照或上传后自动识别全文，直接给出最匹配的题库项。</p>
         </div>
 
         <div className="ocr-right" aria-live="polite">
-          {ocrMatches.length === 0 && <p className="ocr-empty">暂无 OCR 结果，上传图片即可自动匹配题库。</p>}
-          {ocrMatches.map((row, idx) => (
-            <article key={`${row.question}-${idx}`} className="ocr-result-card">
+          {ocrMatches.length === 0 && <p className="ocr-empty">暂无 OCR 结果，上传或拍照即可自动匹配题库。</p>}
+          {ocrMatches.length > 0 && (
+            <article className="ocr-result-card">
               <header className="ocr-result-header">
-                <span className="ocr-question-index">{idx + 1}</span>
-                <button className="ocr-question" onClick={() => setQ(row.question)}>
-                  {row.question}
-                </button>
+                <span className="ocr-question-index">★</span>
+                <span className="ocr-question">OCR 最匹配结果</span>
               </header>
               <div className="ocr-match-list">
-                {row.matches.length === 0 && <p className="ocr-empty">题库中暂无明显匹配</p>}
-                {row.matches.map((m, mIdx) => (
-                  <div key={`${m.id || mIdx}-${idx}`} className="ocr-match">
+                {ocrMatches.map((m, mIdx) => (
+                  <div key={`${m.id || mIdx}`} className="ocr-match">
                     <div className="ocr-match-title">{renderWithAnswers(m.titleText || m.title || m.question, m.analysis)}</div>
                     {m.bank && <span className="ocr-bank">{m.bank}</span>}
                   </div>
                 ))}
               </div>
             </article>
-          ))}
+          )}
         </div>
       </section>
 
