@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>222.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h3 id="%E4%B8%80%E5%8D%95%E9%A1%B9%E9%80%89%E6%8B%A9%E9%A2%981-6">一、单项选择题（1-6）</h3>
+<ol>
+<li>
+<p>在TCP/IP体系结构中，与OSI参考模型的网络层对应的是：
+a.主机—网络层 b.<strong>互联层</strong> c.传输层 d.应用层</p>
+</li>
+<li>
+<p>MAC地址通常存储在计算机的：
+a.内存中 b.<strong>网卡上</strong> c.硬盘上 d.高速缓冲区</p>
+</li>
+<li>
+<p>在以太网中，冲突：
+a.是由于介质访问控制方法的错误使用造成的
+b.是由于网络管理员的失误造成的
+c.<strong>是一种正常现象</strong>
+d.是一种不正常现象</p>
+</li>
+<li>
+<p>下面关于以太网的描述哪个是正确的？
+a.<strong>数据是以广播方式发送的</strong>
+b.所有节点可以同时发送和接收数据
+c.两个节点相互通信时，第三个节点不检测总线上的信号
+d.网络中有一个控制中心，用于控制所有节点的发送和接收</p>
+</li>
+<li>
+<p>IP地址205.140.36.88的哪一部分表示主机号？
+a.205 b.205.140 c.<strong>88</strong> d.36.88</p>
+</li>
+<li>
+<p>路由器中的路由表：
+a.需要包含到达所有主机的完整路径信息
+b.需要包含到达所有主机的下一步路径信息
+c.需要包含到达目的网络的完整路径信息
+d.<strong>需要包含到达目的网络的下一步路径信息</strong></p>
+</li>
+</ol>
+<hr>
+<h3 id="%E4%BA%8C%E5%8D%95%E9%A1%B9%E9%80%89%E6%8B%A9%E9%A2%984-22">二、单项选择题（4-22）</h3>
+<ol start="4">
+<li>
+<p>网络三层架构依次是（  ）。
+<strong>A．接入层→汇聚层→核心层</strong></p>
+</li>
+<li>
+<p>如果子网掩码是255.255.255.0，主机地址为195.16.15.14，则在该子网掩码下最多可以容纳多少个有效主机（   ）。
+<strong>A．254</strong></p>
+</li>
+<li>
+<p>IP地址是202.114.18.190/26，其网络地址是（  ）。
+<strong>A．202.114.18.128</strong></p>
+</li>
+<li>
+<p>一台交换机有8个端口,一个单播帧从某一端口进入了该交换机,但交换机在MAC地址表中查不到关于该帧的目的MAC地址的表项,那么交换机对该帧进行的转发操作是（   ）。
+<strong>B．泛洪</strong></p>
+</li>
+<li>
+<p>浮动静态路由是如何实现的（  ）。
+<strong>A．对比路由优先级值，数值最小的路由会被放入路由表</strong></p>
+</li>
+<li>
+<p>在华为路由器上查看虚拟局域网接口的命令是什么（   ）。
+<strong>B．display interface vlan</strong></p>
+</li>
+<li>
+<p>静态路由的适用场景为（   ）。
+<strong>B．小型网络</strong></p>
+</li>
+<li>
+<p>下列哪一个IPv4地址是C类地址？（   ）
+<strong>D．194.168.1.1</strong></p>
+</li>
+<li>
+<p>配置本地登录设备时，哪一项（）会限制用户的管理权限。
+<strong>A．4</strong></p>
+</li>
+<li>
+<p>下列哪条路由是静态路由（   ）。
+<strong>B．路由器上静态配置的路由</strong></p>
+</li>
+<li>
+<p>在华为路由器上查看IP路由表的命令是什么（   ）。
+<strong>D．display ip routing-table</strong></p>
+</li>
+<li>
+<p>静态路由的默认优先级是（  ）。
+<strong>D．60</strong></p>
+</li>
+<li>
+<p>下列哪一个IPv4地址是A类地址？（   ）
+<strong>A．100.1.1.1</strong></p>
+</li>
+<li>
+<p>子网掩码 255.255.252.0 对应的前缀长度是（  ）。
+<strong>B．/22</strong></p>
+</li>
+<li>
+<p>静态路由相比动态路由的优势是（ ）。
+<strong>B．配置简单，占用设备资源少</strong></p>
+</li>
+<li>
+<p>划分 VLAN 后，同一 VLAN 内的主机无法通信，可能的原因是（   ）。
+<strong>C．主机网关配置错误</strong></p>
+</li>
+<li>
+<p>地址 255.255.255.255 的用途是（  ）。
+<strong>A．全网广播地址</strong></p>
+</li>
+<li>
+<p>三层交换机转发 VLAN 间数据时，本质是执行了（  ）。
+<strong>B．路由转发</strong></p>
+</li>
+<li>
+<p>静态路由中，“浮动静态路由”的配置要点是（  ）。
+<strong>B．目标网络相同，优先级低于主路由</strong></p>
+</li>
+<li>
+<p>划分 VLAN 时，下列哪种端口类型不能配置为 Trunk 模式（  ）。
+<strong>C．路由器的三层物理端口</strong></p>
+</li>
+<li>
+<p>子网掩码为 255.255.255.240 的子网，其可用主机地址范围的计算公式是（   ）。
+<strong>A．网络地址 + 1 ~ 广播地址 - 1</strong></p>
+</li>
+<li>
+<p>某主网为 192.168.10.0/24，若划分子网时子网掩码为 255.255.255.240，可划分的子网数和每个子网的可用主机数分别是（  ）。
+<strong>A．16个，14台</strong></p>
+</li>
+<li>
+<p>RJ-45水晶头的接头为____芯。
+<strong>D．8</strong></p>
+</li>
+<li>
+<p>在windows操作系统中，常用下列（   ）命令在命令行中显示数据包到达目的主机所经历的路径。
+<strong>D．tracert</strong></p>
+</li>
+<li>
+<p>为了保证连接的可靠性，TCP通常采用（   ）。
+<strong>A．三次握手</strong></p>
+</li>
+</ol>
+<hr>
+<h3 id="%E4%B8%89%E5%A1%AB%E7%A9%BA%E9%A2%98">三、填空题</h3>
+<ol>
+<li>
+<p>写出传输层的两种协议：<strong>TCP</strong>、<strong>UDP</strong></p>
+</li>
+<li>
+<p>计算机网络按照覆盖的地理范围分为：<strong>局域网</strong>、<strong>城域网</strong>、<strong>广域网</strong></p>
+</li>
+<li>
+<p>IP地址由<strong>网络号</strong>和<strong>主机号</strong>组成。</p>
+</li>
+<li>
+<p>在TCP/IP网络中，TCP协议工作在<strong>传输层</strong>，FTP协议工作在<strong>应用层</strong>。</p>
+</li>
+<li>
+<p>从下往上依次写出OSI七层模型结构：<strong>物理层、数据链路层、网络层、传输层、会话层、表示层、应用层</strong></p>
+</li>
+<li>
+<p>SSH协议名为<strong>Secure Shell</strong>，端口号为<strong>22</strong>。</p>
+</li>
+<li>
+<p>IPv4地址以<strong>点分十进制</strong>形式表示。</p>
+</li>
+<li>
+<p>若登录用户权限不够，需要<strong>enable</strong>密码修改权限。</p>
+</li>
+<li>
+<p>子网掩码 255.255.255.240 对应的前缀长度是**/28**，可用主机数是<strong>14</strong>台。</p>
+</li>
+<li>
+<p>T568B线序为橙白、<strong>橙</strong>、绿白、蓝、<strong>蓝白</strong>、<strong>绿</strong>、棕白、棕。</p>
+</li>
+<li>
+<p>在公网中能够使用的地址称为<strong>公网</strong>地址，在私网或局域网中能够使用的可重复的地址称为<strong>私网</strong>地址。</p>
+</li>
+<li>
+<p>将IP地址解析为MAC地址的协议是<strong>ARP</strong>。</p>
+</li>
+<li>
+<p>Ping命令使用了<strong>ICMP</strong>的Echo请求和Echo回答报文。</p>
+</li>
+</ol>
+<hr>
+<h3 id="%E5%9B%9B%E5%A4%9A%E9%80%89%E9%A2%98">四、多选题</h3>
+<ol>
+<li>
+<p>DHCP的端口为（    ）。
+<strong>B．67、D．68</strong></p>
+</li>
+<li>
+<p>以下子网掩码正确的是（ ）。
+<strong>C．11111111.11111111.11111111.11000000</strong></p>
+</li>
+<li>
+<p>在创建用户权限时，不同等级的权限名分别叫（    ）。
+<strong>A．参观级、B．监控级、C．管理级、D．用户级</strong></p>
+</li>
+<li>
+<p>在配置远程登录时，A用户无法登录B用户的原因有（   ）。
+<strong>A．未开启Telnet服务、B．设备无法Ping通、C．设备认证模式有误</strong></p>
+</li>
+<li>
+<p>以下哪些是C类地址（  ）。
+<strong>A．194.56.4.89、C．192.168.10.35</strong></p>
+</li>
+<li>
+<p>影响网络的因素有哪些（    ）。
+<strong>A．带宽、B．抖动、C．时延、D．丢包</strong></p>
+</li>
+</ol>
+<hr>
+<h3 id="%E4%BA%94%E5%88%A4%E6%96%AD%E9%A2%98">五、判断题</h3>
+<ol>
+<li>
+<p>10.1.2.1是私有地址。 <strong>(√)</strong></p>
+</li>
+<li>
+<p>计算机网络只能通过有线方式连接。 <strong>(×)</strong></p>
+</li>
+<li>
+<p>通过display saved-configuration查看的是内存中正在运行的配置。 <strong>(×)</strong></p>
+</li>
+<li>
+<p>display this可以查看当前视图的配置命令。 <strong>(√)</strong></p>
+</li>
+<li>
+<p>子网划分可以有效节省ip地址数量。 <strong>(√)</strong></p>
+</li>
+<li>
+<p>生成树STP可以防止环路和广播风暴。 <strong>(√)</strong></p>
+</li>
+<li>
+<p>每一条ospf路由都需要手动建立邻居关系。 <strong>(×)</strong></p>
+</li>
+<li>
+<p>一台电脑只能装有一块网卡。 <strong>(×)</strong></p>
+</li>
+<li>
+<p>每个网卡都有唯一的编号，我们称之为MAC地址。 <strong>(√)</strong></p>
+</li>
+<li>
+<p>网络协议就是为数据交换而制定的规则、约定和标准。 <strong>(√)</strong></p>
+</li>
+<li>
+<p>在计算机网络中，不同节点的相同层次的功能是不一样的。 <strong>(×)</strong></p>
+</li>
+<li>
+<p>表示层的主要功能是数据的表现方式，包括数据的语法和语义等。 <strong>(√)</strong></p>
+</li>
+<li>
+<p>传输层是通过建立物理连接来进行数据传输的。 <strong>(×)</strong></p>
+</li>
+<li>
+<p>TCP/IP协议模型和OSI参考模型都采用了分层体系结构。 <strong>(√)</strong></p>
+</li>
+</ol>
+<hr>
+<h3 id="%E5%85%AD%E7%AE%80%E7%AD%94%E9%A2%98">六、简答题</h3>
+<p><strong>1. 计算出172.16.34.25/24的网络地址和广播地址。</strong></p>
+<ul>
+<li>网络地址：<strong>172.16.34.0</strong></li>
+<li>广播地址：<strong>172.16.34.255</strong></li>
+</ul>
+<p><strong>2. 请写出IP地址的分类和私网IP地址的分类。</strong></p>
+<ul>
+<li><strong>IP地址分类</strong>：
+<ul>
+<li>A类：1.0.0.0 ~ 126.255.255.255</li>
+<li>B类：128.0.0.0 ~ 191.255.255.255</li>
+<li>C类：192.0.0.0 ~ 223.255.255.255</li>
+<li>D类：224.0.0.0 ~ 239.255.255.255（组播）</li>
+<li>E类：240.0.0.0 ~ 255.255.255.255（保留）</li>
+</ul>
+</li>
+<li><strong>私网IP地址分类</strong>：
+<ul>
+<li>A类：10.0.0.0 ~ 10.255.255.255</li>
+<li>B类：172.16.0.0 ~ 172.31.255.255</li>
+<li>C类：192.168.0.0 ~ 192.168.255.255</li>
+</ul>
+</li>
+</ul>
+<p><strong>3. 简述OSI七层模型每一层的作用？</strong></p>
+<ul>
+<li><strong>物理层</strong>：传输比特流，定义电气、机械特性</li>
+<li><strong>数据链路层</strong>：帧的传输、差错控制、流量控制</li>
+<li><strong>网络层</strong>：路由选择、逻辑寻址（IP地址）</li>
+<li><strong>传输层</strong>：端到端连接、可靠传输（TCP/UDP）</li>
+<li><strong>会话层</strong>：建立、管理、终止会话</li>
+<li><strong>表示层</strong>：数据格式转换、加密解密</li>
+<li><strong>应用层</strong>：为用户提供网络服务接口</li>
+</ul>
+<p><strong>4. 简述IP互联网的主要作用和特点。</strong></p>
+<ul>
+<li><strong>主要作用</strong>：屏蔽底层物理网络差异，形成统一的虚拟网络，提供通用服务</li>
+<li><strong>特点</strong>：
+① 隐藏低层物理网络细节，向上提供通用服务
+② 不指定网络互联拓扑，不要求全互联
+③ 所有计算机使用统一的全局地址描述法
+④ 平等对待互联网中的每一个网络
+⑤ 面向非连接，不可靠传输</li>
+</ul>
+<hr>
+<h3 id="%E4%B8%83%E5%8D%95%E9%A1%B9%E9%80%89%E6%8B%A9%E9%A2%98%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86">七、单项选择题（第二部分）</h3>
+<ol>
+<li>
+<p>为网络提供共享资源进行管理的计算机称谓_____________。
+<strong>B、服务器</strong></p>
+</li>
+<li>
+<p>以太网 10 BASE-T 代表的含义是_______。
+<strong>B、10Mb/s 基带传输的双绞线以太网</strong></p>
+</li>
+<li>
+<p>计算机网络的最突出的优点是_______。
+<strong>B、资源共享</strong></p>
+</li>
+<li>
+<p>下面IP 属于C 类 IP 地址的是_______。
+<strong>C、192.251.10.1</strong></p>
+</li>
+<li>
+<p>IP 地址 198.0.46.201 的默认子网掩码是以下哪一个_______。
+<strong>C、255.255.255.0</strong></p>
+</li>
+<li>
+<p>在下列传输介质中，哪些传输介质的抗电磁干扰性最好_______。
+<strong>D、光缆</strong></p>
+</li>
+<li>
+<p>两端用户传输文件，应属于下列TCP/IP 模型的哪一层处理_______。
+<strong>D、应用层</strong></p>
+</li>
+<li>
+<p>下列协议中不属于TCP/IP 网络层协议的是_______。
+<strong>C、PPP</strong></p>
+</li>
+<li>
+<p>数据链路层中的数据块常被称为_______。
+<strong>D、帧</strong></p>
+</li>
+<li>
+<p>常见的HTTP 协议、DNS 协议工作于TCP/IP 模型的_______层。
+<strong>D、应用</strong></p>
+</li>
+<li>
+<p>目前广泛使用的IP 版本为IPv4，根据TCP/IP 协议，它是由_______为二进制数组成的。
+<strong>C、32</strong></p>
+</li>
+<li>
+<p>RJ-45 水晶头的接头为_______芯。
+<strong>D、8</strong></p>
+</li>
+<li>
+<p>路由器最主要的功能是_______。
+<strong>A、路径选择</strong></p>
+</li>
+<li>
+<p>一旦中心节点出现故障，则整个网络将会瘫痪的网络拓扑结构是_______。
+<strong>B、星型</strong></p>
+</li>
+<li>
+<p>C 类 IP 地址的最高三个比特位，从高到低依次是_______
+<strong>B、110</strong></p>
+</li>
+<li>
+<p>DNS 协议主要用于实现哪种功能_______。
+<strong>A、网络域名到 IP地址的映射</strong></p>
+</li>
+<li>
+<p>将双绞线制作成交叉线（一端按EIA/TIA 568 线序，另一端按EIA/TIA 568B 线序），该双绞线连接的两个设备可为_______。
+<strong>A、主机与路由器</strong></p>
+</li>
+<li>
+<p>交换机工作在OSI 模型的_______。
+<strong>B、数据链路层</strong></p>
+</li>
+<li>
+<p>以下地址_______表示网卡的物理地址（MAC 地址）。
+<strong>C、0001.1234.FBC3、D、50-78-4C-6F-03-8D</strong></p>
+</li>
+<li>
+<p>IP 地址 183.194.76.253 是属于（B）类网络。
+<strong>B、B</strong></p>
+</li>
+<li>
+<p>下面的IP 地址中是合法的IP 主机地址的是（ ）。
+<strong>A、1.255.255.2</strong></p>
+</li>
+<li>
+<p>对于 192.157.78.0/27 网络，以下地址（ ）是直接广播地址
+<strong>C、192.157.78.159</strong></p>
+</li>
+<li>
+<p>可以获得主机配置信息，包括IP 地址、子网掩码和默认网关等的命令是（ipconfig/all）。
+<strong>A、ipconfig/all</strong></p>
+</li>
+<li>
+<p>Web 网站的默认端口为（ ）。
+<strong>A、80</strong></p>
+</li>
+<li>
+<p>以下（ ）不是依赖于TCP。
+<strong>C、DHCP</strong></p>
+</li>
+<li>
+<p>下面（ ）协议是TCP/IP 协议栈中的应用层协议
+<strong>B、HTTP</strong></p>
+</li>
+<li>
+<p>Internet 中提供主机名字和IP 地址之间转换的是（ ）。
+<strong>D、DNS</strong></p>
+</li>
+<li>
+<p>在路由表中设置一条默认路由，目标地址应为（ ）。
+<strong>D、0.0.0.0</strong></p>
+</li>
+<li>
+<p>TCP 协议属于协议分层中（ ）的协议。
+<strong>C、运输层</strong></p>
+</li>
+<li>
+<p>实现广域网络与局域网络连接的网络设备是（ ）。
+<strong>C、路由器</strong></p>
+</li>
+<li>
+<p>一个C 类（/24 ）子网最多能容纳（ ）台主机。
+<strong>A、254</strong></p>
+</li>
+<li>
+<p>ICMP 协议属于TCP/IP 网络中的（ ）协议。
+<strong>B、网络层</strong></p>
+</li>
+<li>
+<p>衡量网络上数据传输速率的单位是bit/s，其含义是( )。
+<strong>C、每秒传送多少个二进制位</strong></p>
+</li>
+<li>
+<p>网络适配器通常称为( )。
+<strong>A、网卡</strong></p>
+</li>
+<li>
+<p>网络中所使用的互联设备Router 称为( )。
+<strong>B、路由器</strong></p>
+</li>
+<li>
+<p>常用的数据传输速率单位有Kbps、Mbps、Gbps，lGbps 等于( )。
+<strong>A、1×10^3Mbps</strong></p>
+</li>
+<li>
+<p>IEEE802.3 标准以太网的物理地址长度为( )。
+<strong>C、48bit</strong></p>
+</li>
+<li>
+<p>IEEE 802.3 标准以太网帧大小范围是( )
+<strong>B、64-1518</strong></p>
+</li>
+<li>
+<p>Internet 上的3 个传统的基本应用是( )。
+<strong>C、FTP、WWW、Email</strong></p>
+</li>
+<li>
+<p>IP 地址 195.100.80.99 是( )地址。
+<strong>C、C 类</strong></p>
+</li>
+<li>
+<p>文件传输是使用下面的( )协议。
+<strong>B、FTP</strong></p>
+</li>
+<li>
+<p>在哪个范围内的计算机网络可称之为局域网：( )
+<strong>A、在一个楼宇</strong></p>
+</li>
+<li>
+<p>下面哪个命令用于查看网卡的MAC 地址？( )。
+<strong>A、ipconfig/all</strong></p>
+</li>
+<li>
+<p>TCP/IP 协议应用层中FTP 控制连接是通过( )默认端口号。
+<strong>C、21</strong></p>
+</li>
+<li>
+<p>运行IP 协议的网络层可以为其高层用户提供的服务具有如下 3 个特性（ ）。
+<strong>A、不可靠、面向无连接和尽最大努力投递</strong></p>
+</li>
+<li>
+<p>求IP 地址所在的网络号，下列那一项运算正确？（ ）。
+<strong>A、IP 地址‘与’子网掩码</strong></p>
+</li>
+<li>
+<p>IPv4地址中，掩码的表示方式是( )。
+<strong>D、网络地址全为1，主机地址全为0</strong></p>
+</li>
+<li>
+<p>在因特网域名中，edu 通常表示（ ）。
+<strong>B、教育机构</strong></p>
+</li>
+<li>
+<p>某主机的IP地址为222.113.1.219，子网掩码为255.255.255.240。该主机的直接广播地址为（ ）。
+<strong>B、222.113.1.223</strong></p>
+</li>
+<li>
+<p>在IP 数据报传输过程中（ ）。
+<strong>C、源IP地址和目的IP地址均保持不变</strong></p>
+</li>
+</ol>
+<hr>
+<h3 id="%E5%85%AB%E7%AE%80%E7%AD%94%E9%A2%98">八、简答题</h3>
+<p><strong>2. 双绞线的接线标准有两个：T568A和 T568B，那么 T568B 接线标准线序是什么样的？</strong>
+答：<strong>橙白、橙、绿白、蓝、蓝白、绿、棕白、棕</strong></p>
+<p><strong>3. 试指出计算机网络有哪几种常见地址，并指出它们分别对应那一层。</strong>
+答：<strong>TCP/IP网络中，物理地址与数据链路层有关，逻辑IP地址与网络层有关，端口地址和传输层有关。</strong></p>
+
+</body>
+</html>
